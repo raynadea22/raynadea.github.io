@@ -176,10 +176,10 @@
         </div>
         <div class="row justify-content-center">
           <div class="col-md-8">
-            <form name="Submit-to-google-sheet">
+            <form name="contact">
               <div class="mb-3">
                 <label for="name" class="form-label">Nama Lengkap</label>
-                <input type="text" class="form-control" id="name" aria-describedby="name" name="nama" />
+                <input type="text" class="form-control" id="name" aria-describedby="name" name="nama lengkap" />
               </div>
               <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
@@ -211,52 +211,41 @@
     </footer>
     <!-- akhir footer -->
 
+    <!-- Bootstrap JS -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const scriptURL = "https://script.google.com/macros/s/AKfycby0vBmypW8GAmQyTKeUqgSPlTVwSlsQ89GYpc06cgWckHqAwgV5RG8ZAYMHm_9UOriBkQ/exec";
-        const form = document.forms["Submit-to-google-sheet"];
+      const scriptURL = "https://script.google.com/macros/s/AKfycbw95sFIrXVwUule4UORWRHfyu8WuXn3LvmyHaaBQN2bOZi0UxnWwArMP6QEgThCKCGs/exec";
+      const form = document.forms["contact"];
 
-        if (form) {
-          form.addEventListener("submit", function (e) {
-            e.preventDefault();
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
 
-            const submitBtn = e.target.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
+        // Menampilkan indikator loading (opsional)
+        const submitButton = form.querySelector("[type='submit']");
+        const originalText = submitButton.value;
+        submitButton.value = "Mengirim...";
+        submitButton.disabled = true;
 
-            // Tampilkan loading state
-            submitBtn.innerHTML = "Mengirim...";
-            submitBtn.disabled = true;
-
-            fetch(scriptURL, {
-              method: "POST",
-              body: new FormData(form),
-            })
-              .then((response) => {
-                if (!response.ok) {
-                  throw new Error("Network response was not ok");
-                }
-                return response;
-              })
-              .then(() => {
-                alert("Pesan berhasil dikirim!");
-                form.reset();
-              })
-              .catch((error) => {
-                console.error("Error!", error);
-                alert("Gagal mengirim pesan. Silakan coba lagi nanti atau hubungi melalui Instagram");
-              })
-              .finally(() => {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-              });
+        fetch(scriptURL, {
+          method: "POST",
+          body: new FormData(form),
+        })
+          .then((response) => {
+            console.log("Success!", response);
+            alert("Form berhasil dikirim!"); // Notifikasi ke pengguna
+            form.reset(); // Reset form setelah berhasil
+          })
+          .catch((error) => {
+            console.error("Error!", error.message);
+            alert("Terjadi kesalahan saat mengirim form. Silakan coba lagi."); // Notifikasi error
+          })
+          .finally(() => {
+            // Mengembalikan tombol ke keadaan semula
+            submitButton.value = originalText;
+            submitButton.disabled = false;
           });
-        } else {
-          console.error("Form tidak ditemukan!");
-        }
       });
     </script>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
   </body>
 </html>
